@@ -1,0 +1,16 @@
+query Realestate_CustomerPermission1 {
+  scope(role: ANONYMOUS, operations: [READ])
+}
+
+
+query Realestate_CustomerPermission2 {
+  scope(role: STAFF, operations: [CREATE, UPDATE, DELETE, PUBLISH, UNPUBLISH])
+}
+
+
+query Realestate_CustomerPermission3 {
+  scope(
+    role: RUNTIME
+    operations: [CREATE, UPDATE, DELETE, PUBLISH, UNPUBLISH, READ]
+  )
+}

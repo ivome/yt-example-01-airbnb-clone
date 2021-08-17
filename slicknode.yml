@@ -1,0 +1,7 @@
+dependencies:
+  '@private/realestate': ./modules/realestate
+  auth: latest
+  content: latest
+  core: latest
+  image: latest
+  relay: latest

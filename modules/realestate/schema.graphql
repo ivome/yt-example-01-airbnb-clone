@@ -1,0 +1,151 @@
+"""
+A Property
+"""
+type Realestate_Property implements Node {
+  id: ID!
+
+  name: String!
+  slug: String! @unique
+}
+
+"""
+A Unit
+"""
+type Realestate_Unit implements Node {
+  id: ID!
+
+  name: String!
+  property: Realestate_Property
+  slug: String! @unique
+  services: [Realestate_Service!]!
+    @relation(path: "Realestate_Unit=unit.Realestate_Service")
+}
+
+"""
+A unit Feature
+"""
+type Realestate_UnitFeature implements Node
+  @index(fields: ["unit", "feature"], unique: true) {
+  id: ID!
+
+  unit: Realestate_Unit!
+  feature: Realestate_Feature!
+}
+
+"""
+A Feature
+"""
+type Realestate_Feature implements Node {
+  id: ID!
+
+  name: String!
+  slug: String! @unique
+  image: Image
+  description: String @input(type: MARKDOWN)
+}
+
+"""
+A Service
+"""
+type Realestate_Service implements Node {
+  id: ID!
+
+  unit: Realestate_Unit!
+  name: String!
+  slug: String! @unique
+  description: String @input(type: MARKDOWN)
+  price: Decimal!
+  availabilities: [Realestate_ServiceAvailability!]!
+    @relation(path: "Realestate_Service=service.Realestate_ServiceAvailability")
+}
+
+"""
+A ServiceAvailability
+"""
+type Realestate_ServiceAvailability implements Node {
+  id: ID!
+
+  service: Realestate_Service!
+  start: DateTime!
+  end: DateTime!
+}
+
+"""
+A ProductCategory
+"""
+type Realestate_ProductCategory implements Node {
+  id: ID!
+
+  name: String!
+  slug: String! @unique
+  description: String @input(type: MARKDOWN)
+}
+
+"""
+A Product
+"""
+type Realestate_Product implements Node {
+  id: ID!
+
+  name: String!
+  slug: String! @unique
+  image: Image
+  category: Realestate_ProductCategory!
+  description: String @input(type: MARKDOWN)
+}
+
+"""
+A ProductInventory
+"""
+type Realestate_ProductInventory implements Node {
+  id: ID!
+
+  unit: Realestate_Unit!
+  product: Realestate_Product!
+  quantity: Decimal
+}
+
+"""
+A Customer
+"""
+type Realestate_Customer implements Node {
+  id: ID!
+
+  name: String!
+}
+
+"""
+A Booking
+"""
+type Realestate_Booking implements Node {
+  id: ID!
+
+  status: Realestate_BookingStatus!
+  customer: Realestate_Customer!
+  unit: Realestate_Unit!
+  start: DateTime!
+  end: DateTime!
+  amount: Decimal!
+}
+
+enum Realestate_BookingStatus {
+  NEW
+  PAYMENT_PENDING
+  CONFIRMED
+  COMPLETE
+  CANCELLED
+}
+
+input Realestate_BookUnitInput {
+  unitId: ID!
+}
+
+type Realestate_BookUnitPayload {
+  success: Boolean!
+}
+
+extend type Mutation {
+  Realestate_bookUnit(
+    input: Realestate_BookUnitInput!
+  ): Realestate_BookUnitPayload
+}
